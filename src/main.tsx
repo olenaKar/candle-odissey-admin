@@ -3,8 +3,9 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import Candles from "./pages/candles";
-import Candle from "./pages/candle";
 import CandleCreatePage from "@/pages/candles/create.tsx";
+import CandleEditPage from "@/components/edit-candle-form.tsx";
+import {Toaster} from "sonner";
 
 createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
@@ -12,10 +13,11 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<App />}>
                 <Route path="/candles">
                     <Route index element={<Candles />} />
-                    <Route path="/candles/new" element={<CandleCreatePage />} />
-                    <Route path=":id" element={<Candle />} />
+                    <Route path="new" element={<CandleCreatePage />} />
+                    <Route path="edit/:id" element={<CandleEditPage />} />
                 </Route>
             </Route>
         </Routes>
+        <Toaster position="top-right" richColors />
     </BrowserRouter>,
 )

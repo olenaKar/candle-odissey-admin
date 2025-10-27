@@ -3,10 +3,31 @@ export enum Wick {
     Cotton = 'COTTON'
 }
 
+export const WickLabels = {
+    [Wick.Wooden]: 'WOOD',
+    [Wick.Cotton]: 'COTTON'
+}
+
+export enum Size {
+    Medium = 'M',
+    Large = 'L'
+}
+
+export const SizeLabels = {
+    [Size.Medium]: 'M',
+    [Size.Large]: 'L'
+}
+
 export enum Colors {
     White = 'WHITE',
     Black = 'BLACK',
     Transparent = 'TRANSPARENT',
+}
+
+export const ColorsLabels = {
+    [Colors.White]: 'White',
+    [Colors.Black]: 'Black',
+    [Colors.Transparent]: 'Transparent',
 }
 
 export enum Aroma {
@@ -81,4 +102,77 @@ export enum Aroma {
     ChristmasHearth = 'Christmas hearth',
     VelvetVanilla = 'Velvet vanilla',
 
+}
+
+export const AromaLabels = {
+    [Aroma.SweetOrangeSriracha]: 'Sweet Orange Sriracha',
+    [Aroma.Fireside]: 'Fireside',
+    [Aroma.CaribbeanTeakwood]: 'Caribbean teakwood',
+    [Aroma.BeachLinen]: 'Beach linen',
+    [Aroma.Hepm]: 'Hepm',
+    [Aroma.ButterscotchBourbon]: 'Butterscotch & Bourbon',
+    [Aroma.HanselAndGretelsHouse]: "Hansel and gretel's house",
+    [Aroma.ChocolateFudge]: 'Chocolate Fudge',
+    [Aroma.SparklingGrapefruit]: 'Sparkling grapefruit',
+    [Aroma.Library]: 'Library',
+    [Aroma.CampfireMarshmallows]: 'Campfire marshmallows',
+    [Aroma.PumpkinSpiceButtercream]: 'Pumpkin spice buttercream',
+    [Aroma.FallenLeaves]: 'Fallen leaves',
+    [Aroma.Lily]: 'Lily',
+    [Aroma.RoseAndOud]: 'Rose and Oud',
+    [Aroma.BlackRaspberryVanilla]: 'Black raspberry vanilla',
+    [Aroma.OceanBreeze]: 'Ocean breeze',
+    [Aroma.Wassail]: 'Wassail',
+    [Aroma.HighTide]: 'High tide',
+    [Aroma.NordicNight]: 'Nordic night',
+    [Aroma.BlackCurrantAbsinthe]: 'Black currant absinthe',
+    [Aroma.Cotton]: 'Cotton',
+    [Aroma.Vanilla]: 'Vanilla',
+    [Aroma.Sangria]: 'Sangria',
+    [Aroma.WhiteOakAndVanilla]: 'White oak and vanilla',
+    [Aroma.NagChampa]: 'Nag champa',
+    [Aroma.SweetTobacco]: 'Sweet tobacco',
+    [Aroma.Garden]: 'Garden',
+    [Aroma.CremeBrulee]: 'Creme brulee',
+    [Aroma.StrawberriesAndCream]: 'Strawberries and cream',
+    [Aroma.Petrichor]: 'Petrichor',
+    [Aroma.MountainMist]: 'Mountain mist',
+    [Aroma.SmokedOud]: 'Smoked Oud',
+    [Aroma.JamaicaMeCrazy]: 'Jamaica me crazy',
+    [Aroma.MovieTheaterPopcorn]: 'Movie Theater Popcorn',
+    [Aroma.OliveLeafAndCitron]: 'Olive Leaf and Citron',
+    [Aroma.PinkSugarCrystals]: 'Pink Sugar Crystals',
+    [Aroma.LemonVerbena]: 'Lemon Verbena',
+    [Aroma.EgyptianAmber]: 'Egyptian Amber',
+    [Aroma.DryGinAndCypress]: 'Dry Gin and Cypress',
+    [Aroma.ApplewoodFirNeedle]: 'Applewood Fir Needle',
+    [Aroma.ToastedPumpkinSpice]: 'Toasted Pumpkin Spice',
+    [Aroma.CoffeeShop]: 'Coffee shop',
+    [Aroma.FreshlyBakedBread]: 'Freshly baked bread',
+    [Aroma.BlueberryPie]: 'Blueberry pie',
+    [Aroma.VanillaEggnog]: 'Vanilla eggnog',
+    [Aroma.ApplePie]: 'Apple pie',
+    [Aroma.OatmealMilkNHoney]: 'Oatmeal Milk-n-Honey',
+    [Aroma.BalsamAndEdar]: 'Balsam and Cedar',
+    [Aroma.MountainPine]: 'Mountain Pine',
+    [Aroma.VanillaCaramel]: 'Vanilla Caramel',
+    [Aroma.SugaredChestnuts]: 'Sugared Chestnuts',
+    [Aroma.FraserFir]: 'Fraser Fir',
+    [Aroma.CocoaButterCashmere]: 'Cocoa Butter Cashmere',
+    [Aroma.BlueberryCobbler]: 'Blueberry cobbler',
+    [Aroma.FreshCoffee]: 'Fresh coffee',
+    [Aroma.WholeWheatBread]: 'Whole wheat bread',
+    [Aroma.OakmossAndAmber]: 'Oakmoss and amber',
+    [Aroma.WatermintAndClementine]: 'Watermint and clementine',
+    [Aroma.PaloSantoPatchouli]: 'Palo santo patchouli',
+    [Aroma.CinnamonDoughnuts]: 'Cinnamon doughnuts',
+    [Aroma.TonkaAndOud]: 'Tonka and Oud',
+    [Aroma.CaramelPopcorn]: 'Caramel popcorn',
+    [Aroma.SugarPlumPunch]: 'Sugar plum punch',
+    [Aroma.FreshCutGrass]: 'Fresh cut grass',
+    [Aroma.CrystallisedGingerAndCardamom]: 'Crystallised ginger and cardamom',
+    [Aroma.GrapefruitAndMint]: 'Grapefruit and mint',
+    [Aroma.ChristmasMemories]: 'Christmas memories',
+    [Aroma.ChristmasHearth]: 'Christmas hearth',
+    [Aroma.VelvetVanilla]: 'Velvet vanilla',
 }

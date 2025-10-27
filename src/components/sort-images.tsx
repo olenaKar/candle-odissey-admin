@@ -53,13 +53,16 @@ export default function SortableImages({ images, onChange }: Props) {
 }
 
 function SortableImage({ id, src }: { id: string; src: string }) {
-    const { setNodeRef, attributes, listeners, transform, transition } = useSortable({ id });
+    const {setNodeRef, attributes, listeners, transform, transition} = useSortable({id});
 
     const style: React.CSSProperties = {
         transform: CSS.Transform.toString(transform),
         transition,
     };
 
+    const isImage = src.match(/\.(jpeg|jpg|png)$/i)
+    const isVideo = src.match(/\.(mp4|webm|mov)$/i)
+    // console.log(src)
     return (
         <div
             ref={setNodeRef}
@@ -68,7 +71,16 @@ function SortableImage({ id, src }: { id: string; src: string }) {
             {...listeners}
             className="w-28 h-28 flex-shrink-0 rounded border border-gray-300 overflow-hidden cursor-grab"
         >
-            <img src={src} alt="" className="w-full h-full object-cover" />
+            {isImage && <img src={src} alt="media" className="w-full h-full object-cover" />}
+            {isVideo && (
+                <video
+                    src={src}
+                    className="w-full h-full object-cover"
+                    muted
+                    playsInline
+                    preload="metadata"
+                />
+            )}
         </div>
     );
 }
