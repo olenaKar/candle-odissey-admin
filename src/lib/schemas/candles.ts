@@ -17,9 +17,7 @@ export const baseCandleFormSchema = z.object({
     quantity: z.number(),
     price: z.number(),
     aroma: z.string(),
-    color: z.string(),
-    wick: z.string(),
-    size: z.string(),
+    attributes: z.record(z.string(), z.array(z.string())),
     images: z.array(z.instanceof(File)),
 });
 

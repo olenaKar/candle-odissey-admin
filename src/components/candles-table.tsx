@@ -7,7 +7,6 @@ import {
 } from "@tanstack/react-table"
 
 import type {ColumnDef} from "@tanstack/react-table";
-
 import {
     Table,
     TableBody,

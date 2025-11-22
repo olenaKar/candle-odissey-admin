@@ -1,48 +1,66 @@
 import {useEffect, useState} from "react";
-import {fetchCandles} from "@/lib/axios";
+import {fetchProductVariants} from "@/lib/axios";
 import {Spinner} from "@/components/ui/shadcn-io/spinner";
-import type {Candle} from "@/types/candle.ts";
+import type {ProductVariantsResponse} from "@/types/candle.ts";
 import {DataTable} from "@/components/candles-table.tsx";
 import {Pagination} from "@/components/pagination.tsx";
 import {columns} from "@/components/candle-table-columns-data.tsx";
+import {DEFAULT_PAGE_SIZE} from "@/constants/global.ts";
+import {SearchForm} from "@/components/search-form.tsx";
+import {useParams} from "react-router";
 
 
-const Candles = () => {
-    const [candles, setCandles] = useState<Candle[]>([])
+const ProductVariants = () => {
+    const { category } = useParams()
+
+    const [candles, setCandles] = useState<ProductVariantsResponse[]>([])
     const [currentPage, setCurrentPage] = useState(1)
-    const [totalPage, setTotalPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(1)
     const [loading, setLoading] = useState(true)
-    const countRecordsOnPage = 10;
+    const [searchQuery, setSearchQuery] = useState("")
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await fetchCandles({page:currentPage, pageSize: countRecordsOnPage})
-                setCandles(res.data)
-                setTotalPage(Math.ceil(res.count / countRecordsOnPage))
+        void fetchData(searchQuery)
+    }, [currentPage, searchQuery])
 
-            } catch (err) {
-                console.error(err)
-            } finally {
-                setLoading(false)
-            }
+    const fetchData = async (query?: string) => {
+        try {
+            setLoading(true)
+            const res = await fetchProductVariants({
+                category,
+                page: currentPage,
+                pageSize: DEFAULT_PAGE_SIZE,
+                query,
+            })
+            setCandles(res.data)
+            setTotalPages(Math.ceil(res.count / DEFAULT_PAGE_SIZE))
+        } catch (err) {
+            console.error(err)
+        } finally {
+            setLoading(false)
         }
+    }
 
-        void fetchData()
-    }, [currentPage, countRecordsOnPage, totalPage])
+    const handleSearch = async (query: string) => {
+        // setSearching(true)
+        setSearchQuery(query)
+        setCurrentPage(1)
+        // setSearching(false)
+    }
 
     if (loading) return <Spinner />
     return (
         <div className="container mx-auto py-10">
+            <SearchForm onSearch={handleSearch} loading={loading} />
             <div className="pb-6">
                 <DataTable columns={columns} data={candles}/>
             </div>
 
-            <Pagination totalPage={totalPage} currentPage={currentPage} onPageChange={setCurrentPage}/>
+            <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage}/>
         </div>
     )
 }
 
-export default Candles
+export default ProductVariants
 
 

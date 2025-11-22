@@ -1,28 +1,71 @@
-import { Search } from "lucide-react"
-
-import { Label } from "@/components/ui/label"
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {z} from "zod";
 import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarInput,
-} from "@/components/ui/sidebar"
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormMessage
+} from "@/components/ui/form.tsx";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+// import {useState} from "react";
+// import {fetchCandleById} from "@/lib/axios.ts";
+// import {columns} from "@/components/candle-table-columns-data.tsx";
+// import {DataTable} from "@/components/candles-table.tsx";
 
-export function SearchForm({ ...props }: React.ComponentProps<"form">) {
-  return (
-    <form {...props}>
-      <SidebarGroup className="py-0">
-        <SidebarGroupContent className="relative">
-          <Label htmlFor="search" className="sr-only">
-            Search
-          </Label>
-          <SidebarInput
-            id="search"
-            placeholder="Search the docs..."
-            className="pl-8"
-          />
-          <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
-        </SidebarGroupContent>
-      </SidebarGroup>
-    </form>
+const searchSchema = z.object({
+    query: z.string().optional().transform(val => val?.trim() || undefined),
+});
+
+
+interface SearchFormProps {
+    onSearch: (query: string) => void
+    loading?: boolean
+}
+
+type SearchFormValues = z.infer<typeof searchSchema>
+
+export const SearchForm= ({ onSearch, loading }: SearchFormProps)=> {
+    const searchForm = useForm({
+        resolver: zodResolver(searchSchema),
+        defaultValues: { query: "" },
+    })
+
+    const onSubmit = (values: SearchFormValues) => {
+        console.log("Search query:", values.query)
+        if (values.query) {
+            onSearch(values?.query.trim())
+        }
+    }
+
+
+    return (
+      <div>
+          <Form {...searchForm}>
+              <form onSubmit={searchForm.handleSubmit(onSubmit)} className="flex justify-end space-y-8">
+                  <div className="pr-2">
+                      <FormField
+                          control={searchForm.control}
+                          name="query"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormControl>
+                                      <Input placeholder="Search" disabled={loading} {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                  </div>
+                  <Button type="submit" disabled={loading} className="cursor-pointer">
+                      {loading ? "Searching..." : "Search"}
+                  </Button>
+              </form>
+          </Form>
+
+      </div>
+
   )
 }

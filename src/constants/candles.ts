@@ -1,34 +1,34 @@
-export enum Wick {
-    Wooden = 'WOOD',
-    Cotton = 'COTTON'
-}
-
-export const WickLabels = {
-    [Wick.Wooden]: 'WOOD',
-    [Wick.Cotton]: 'COTTON'
-}
-
-export enum Size {
-    Medium = 'M',
-    Large = 'L'
-}
-
-export const SizeLabels = {
-    [Size.Medium]: 'M',
-    [Size.Large]: 'L'
-}
-
-export enum Colors {
-    White = 'WHITE',
-    Black = 'BLACK',
-    Transparent = 'TRANSPARENT',
-}
-
-export const ColorsLabels = {
-    [Colors.White]: 'White',
-    [Colors.Black]: 'Black',
-    [Colors.Transparent]: 'Transparent',
-}
+// export enum Wick {
+//     Wooden = 'WOOD',
+//     Cotton = 'COTTON'
+// }
+//
+// export const WickLabels = {
+//     [Wick.Wooden]: 'WOOD',
+//     [Wick.Cotton]: 'COTTON'
+// }
+//
+// export enum Size {
+//     Medium = 'M',
+//     Large = 'L'
+// }
+//
+// export const SizeLabels = {
+//     [Size.Medium]: 'M',
+//     [Size.Large]: 'L'
+// }
+//
+// export enum Colors {
+//     White = 'WHITE',
+//     Black = 'BLACK',
+//     Transparent = 'TRANSPARENT',
+// }
+//
+// export const ColorsLabels = {
+//     [Colors.White]: 'White',
+//     [Colors.Black]: 'Black',
+//     [Colors.Transparent]: 'Transparent',
+// }
 
 export enum Aroma {
     SweetOrangeSriracha= 'Sweet Orange Sriracha',

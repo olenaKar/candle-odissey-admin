@@ -1,8 +1,6 @@
 import * as React from "react"
-import { ChevronRight } from "lucide-react"
+import {ChevronRight, GalleryVerticalEnd} from "lucide-react"
 
-import { SearchForm } from "@/components/search-form"
-import { VersionSwitcher } from "@/components/version-switcher"
 import {
   Collapsible,
   CollapsibleContent,
@@ -21,34 +19,39 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import {useLocation} from "react-router";
+import {categorySlugs} from "@/constants/global.ts";
 
 const data = {
   versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
     {
       title: "Candles Panel",
-      url: "/candles",
+      url: `/products/${categorySlugs.candles}`,
       items: [
         {
           title: "Add new candle",
-          url: "/candles/new",
+          url: `/products/${categorySlugs.candles}/new`,
         },
         {
           title: "All candles",
-          url: "/candles",
+          url: `/products/${categorySlugs.candles}`,
         },
       ],
     },
     {
-      // title: "Products Panel",
-      // url: "#",
-      // items: [
-      //   {
-      //     title: "All Product",
-      //     url: "#",
-      //   },
-      // ],
-    },
+          title: "Products Panel",
+          url: "#",
+          items: [
+            {
+              title: "Add new Product",
+              url: "/products/new",
+            },
+              {
+                  title: "All Product",
+                  url: "/products",
+              },
+          ],
+      },
   ],
 }
 
@@ -57,11 +60,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
-        />
-        <SearchForm />
+          <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          >
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <GalleryVerticalEnd className="size-4" />
+              </div>
+              <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-medium">Admin Candle Odissey</span>
+              </div>
+          </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent className="gap-0">
         {data.navMain.map((item) => (

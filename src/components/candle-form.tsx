@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -41,11 +40,12 @@ import { useRef } from 'react';
 import 'ckeditor5/ckeditor5.css';
 import SortableImages, {type ImageItem} from "@/components/sort-images.tsx";
 import {cn} from "@/lib/utils.ts";
-import {AromaLabels, ColorsLabels, SizeLabels, WickLabels} from "@/constants/candles.ts";
 import {type CandleFormValues, getCandleFormSchema} from "@/lib/schemas/candles.ts";
-import type {Media} from "@/types/candle.ts";
+import type {Attribute, Media} from "@/types/candle.ts";
 import {toast} from "sonner";
-import {createCandle, updateCandle} from "@/lib/axios.ts";
+import {createCandle, fetchCategoryAttributes, updateCandle} from "@/lib/axios.ts";
+import {AromaLabels} from "@/constants/candles.ts";
+import {AttributeSelect} from "@/components/attribute-select.tsx";
 
 type Option = {
     label: string
@@ -113,19 +113,45 @@ function CKEditorField({ field }: { field: FieldProps }) {
     );
 }
 
-
 export function CandleForm({ defaultValues }: CandleFormProps) {
+    // const [open, setOpen] = useState(false)
+    const [attributes, setAttributes] = useState<Attribute[] | []>([])
+    const [openAroma, setOpenAroma] = useState(false)
     const [images, setImages] = useState<Array<{ path: string; id: string, altText?: string, meta?: string }>>(
         defaultValues?.media
             ? defaultValues.media.map(m => ({ id: m.id.toString(), path: m.url }))
             : []
     );
 
+    useEffect(() => {
+        fetchAttributes()
+        console.log('fetch')
+    }, []);
+
+    const fetchAttributes = async () => {
+        try {
+            const data = await fetchCategoryAttributes({ slug: 'candles' })
+            console.log('API response:', data)
+            setAttributes(data)
+        } catch (e) {
+            console.error("Error fetch attributes", e)
+        }
+
+    }
+
+    const attributesDefaults: Record<string, string[]> = {};
+
+    attributes?.forEach(attr => {
+        const attrName = attr.name;
+        const defaultValue = attr.attributeValues?.[0]?.value || "";
+        attributesDefaults[attrName] = [defaultValue];
+    });
+
+
     const mediaInputRef = useRef<HTMLInputElement>(null)
     const navigate = useNavigate()
     const supabaseUrl = import.meta.env.VITE_PUBLIC_SUPABASE_URL
     const formSchema = getCandleFormSchema(Boolean(defaultValues))
-
     const onImagesSort = (images: ImageItem[]) => {
         setImages(images.map(image => ({path: image.src, id: image.id})))
     }
@@ -143,9 +169,7 @@ export function CandleForm({ defaultValues }: CandleFormProps) {
             price: 0,
             images: [],
             aroma: "",
-            color: "",
-            wick: "",
-            size: "",
+            attributes: attributesDefaults,
             ...defaultValues
         }
     })
@@ -158,8 +182,7 @@ export function CandleForm({ defaultValues }: CandleFormProps) {
         }
     }, [defaultValues, reset]);
 
-
-    const params = useParams()
+    const params = useParams<{id: string, category: string}>()
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         const imagesData = images.map((image, index) => ({
@@ -169,13 +192,15 @@ export function CandleForm({ defaultValues }: CandleFormProps) {
             meta: image.meta ?? '',
         }));
 
-        const candleData = {...values, media: imagesData}
+        const candleData = {...values, categorySlug: params.category || '', media: imagesData}
 
         try {
             await toast.promise(
-                defaultValues
-                    ? updateCandle(params.id as string, candleData)
-                    : createCandle(candleData),
+                Promise.resolve(
+                    defaultValues
+                        ? await updateCandle(+params.id!, candleData)
+                        : await createCandle(candleData)
+                ),
                 {
                     loading: defaultValues ? "Updating candle..." : "Creating candle...",
                     success: defaultValues
@@ -185,11 +210,12 @@ export function CandleForm({ defaultValues }: CandleFormProps) {
                 }
             )
 
-            navigate(('/candles'))
+            navigate(('/products/candles'))
         } catch (e: any) {
             console.error("Error create candle", e.response?.data ?? e.message ?? e)
         }
     }
+    const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
     return (
         <Form {...form}>
@@ -234,7 +260,6 @@ export function CandleForm({ defaultValues }: CandleFormProps) {
                             )
                         )
                     }
-
                 <div className='flex'>
                     <FormField
                         control={form.control}
@@ -280,62 +305,28 @@ export function CandleForm({ defaultValues }: CandleFormProps) {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name='size'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Size</FormLabel>
-                                <FormControl>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <Button
-                                                variant="outline"
-                                                role="combobox"
-                                                className={cn(
-                                                    "w-full justify-between",
-                                                    !field.value && "text-muted-foreground"
-                                                )}
-                                            >
-                                                {field.value
-                                                    ? getFrameworks(SizeLabels).find((size: Option) => size.value === field.value)?.label
-                                                    : "Select size"}
-                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-full p-0" side="bottom" align="start">
-                                            <Command>
-                                                <CommandInput placeholder="Search size..." />
-                                                <CommandEmpty>No size found.</CommandEmpty>
-                                                <CommandGroup className="max-h-60 overflow-y-auto">
-                                                    {getFrameworks(SizeLabels).map((size) => (
-                                                        <CommandItem
-                                                            value={size.label}
-                                                            key={size.value}
-                                                            onSelect={() => {
-                                                                form.setValue("size", size.value)
-                                                            }}
-                                                        >
-                                                            <Check
-                                                                className={cn(
-                                                                    "mr-2 h-4 w-4",
-                                                                    size.value === field.value ? "opacity-100" : "opacity-0"
-                                                                )}
-                                                            />
-                                                            {size.label}
-                                                        </CommandItem>
-                                                    ))}
-                                                </CommandGroup>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
                 </div>
-
+                <div className="flex">
+                    {attributes && attributes.map(attr => {
+                        const name = attr.name;
+                        const options = attr.values || {} as string[];
+                        return(
+                            <FormField
+                                control={form.control}
+                                name={name}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{capitalize(name)}</FormLabel>
+                                        <FormControl>
+                                            <AttributeSelect options={options} name={name} field={field}/>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )
+                    })}
+                </div>
                 <FormField
                     control={form.control}
                     name='aroma'
@@ -343,11 +334,12 @@ export function CandleForm({ defaultValues }: CandleFormProps) {
                         <FormItem className="w-80">
                             <FormLabel>Aroma</FormLabel>
                             <FormControl>
-                                <Popover>
+                                <Popover open={openAroma} onOpenChange={setOpenAroma}>
                                     <PopoverTrigger asChild>
                                         <Button
                                             variant="outline"
                                             role="combobox"
+                                            aria-expanded={openAroma}
                                             className={cn(
                                                 "w-full justify-between",
                                                 !field.value && "text-muted-foreground"
@@ -370,6 +362,7 @@ export function CandleForm({ defaultValues }: CandleFormProps) {
                                                         key={aroma.value}
                                                         onSelect={() => {
                                                             form.setValue("aroma", aroma.value)
+                                                            setOpenAroma(false)
                                                         }}
                                                     >
                                                         <Check
@@ -379,114 +372,6 @@ export function CandleForm({ defaultValues }: CandleFormProps) {
                                                             )}
                                                         />
                                                         {aroma.label}
-                                                    </CommandItem>
-                                                ))}
-                                            </CommandGroup>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name='wick'
-                    render={({ field }) => (
-                        <FormItem className="w-80">
-                            <FormLabel>Wick</FormLabel>
-                            <FormControl>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            role="combobox"
-                                            className={cn(
-                                                "w-full justify-between",
-                                                !field.value && "text-muted-foreground"
-                                            )}
-                                        >
-                                            {field.value
-                                                ? getFrameworks(WickLabels).find((wick: Option) => wick.value === field.value)?.label
-                                                : "Select wick"}
-                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-full p-0">
-                                        <Command>
-                                            <CommandInput placeholder="Search wick..." />
-                                            <CommandEmpty>No wick found.</CommandEmpty>
-                                            <CommandGroup>
-                                                {getFrameworks(WickLabels).map((wick) => (
-                                                    <CommandItem
-                                                        value={wick.label}
-                                                        key={wick.value}
-                                                        onSelect={() => {
-                                                            form.setValue("wick", wick.value)
-                                                        }}
-                                                    >
-                                                        <Check
-                                                            className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                wick.value === field.value ? "opacity-100" : "opacity-0"
-                                                            )}
-                                                        />
-                                                        {wick.label}
-                                                    </CommandItem>
-                                                ))}
-                                            </CommandGroup>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name='color'
-                    render={({ field }) => (
-                        <FormItem className="w-80">
-                            <FormLabel>Color</FormLabel>
-                            <FormControl>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            role="combobox"
-                                            className={cn(
-                                                "w-full justify-between",
-                                                !field.value && "text-muted-foreground"
-                                            )}
-                                        >
-                                            {field.value
-                                                ? getFrameworks(ColorsLabels).find((color: Option) => color.value === field.value)?.label
-                                                : "Select color"}
-                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-full p-0">
-                                        <Command>
-                                            <CommandInput placeholder="Search color..." />
-                                            <CommandEmpty>No color found.</CommandEmpty>
-                                            <CommandGroup>
-                                                {getFrameworks(ColorsLabels).map((color) => (
-                                                    <CommandItem
-                                                        value={color.label}
-                                                        key={color.value}
-                                                        onSelect={() => {
-                                                            form.setValue("color", color.value)
-                                                        }}
-                                                    >
-                                                        <Check
-                                                            className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                color.value === field.value ? "opacity-100" : "opacity-0"
-                                                            )}
-                                                        />
-                                                        {color.label}
                                                     </CommandItem>
                                                 ))}
                                             </CommandGroup>

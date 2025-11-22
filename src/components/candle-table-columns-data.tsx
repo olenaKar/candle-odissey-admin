@@ -1,8 +1,8 @@
 import type {ColumnDef} from "@tanstack/react-table";
-import type {Candle} from "@/types/candle.ts";
+import type {ProductVariantsResponse} from "@/types/candle.ts";
 import {ActionsCells} from "@/components/candles-table-columns.tsx";
 
-export const columns: ColumnDef<Candle>[] = [
+export const columns: ColumnDef<ProductVariantsResponse>[] = [
     {
         accessorKey: "id",
         header: "id",
@@ -10,7 +10,7 @@ export const columns: ColumnDef<Candle>[] = [
     {
         header: "Image",
         cell: info => {
-            const url = info.row.original.product.media[0].url
+            const url = info.row.original.media[0] ? info.row.original.media[0].url : ''
             return <img src={url} alt="product" className="w-10 h-10 object-cover rounded-md"/>
         },
     },

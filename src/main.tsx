@@ -6,12 +6,18 @@ import Candles from "./pages/candles";
 import CandleCreatePage from "@/pages/candles/create.tsx";
 import CandleEditPage from "@/components/edit-candle-form.tsx";
 import {Toaster} from "sonner";
+import CreateProduct from "@/pages/products/create.tsx";
+import Products from "@/pages/products";
 
 createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<App />}>
-                <Route path="/candles">
+                <Route path="/products">
+                    <Route path="new" element={<CreateProduct />} />
+                    <Route index element={<Products />} />
+                </Route>
+                <Route path="/product-variants/:category">
                     <Route index element={<Candles />} />
                     <Route path="new" element={<CandleCreatePage />} />
                     <Route path="edit/:id" element={<CandleEditPage />} />
