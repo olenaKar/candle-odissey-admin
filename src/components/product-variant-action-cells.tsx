@@ -1,7 +1,7 @@
 "use client"
 
 import type {Row} from "@tanstack/react-table";
-import type {Candle} from "@/types/candle.ts";
+import type {ProductVariantsResponse} from "@/types/candle.ts";
 import {Archive, PencilIcon} from "lucide-react";
 import {useNavigate} from "react-router";
 import {
@@ -16,9 +16,10 @@ import {
 import {changeCandleStatus} from "@/lib/axios.ts";
 import {toast} from "sonner";
 
-export const ActionsCells = ({ row }: {row: Row<Candle>}) => {
+export const ActionsCells = ({ row }: {row: Row<ProductVariantsResponse>}) => {
     const navigate = useNavigate()
     const { id } = row.original
+    const {category} = row.original.product
 
     const handleArchive = async () => {
         await toast.promise(
@@ -35,7 +36,7 @@ export const ActionsCells = ({ row }: {row: Row<Candle>}) => {
         <div className="flex gap-2">
             <div>
                 <PencilIcon className='w-5 h-5 cursor-pointer stroke-green-700 hover:scale-120' onClick={() =>
-                    navigate(`/candles/edit/${id}`)}/>
+                    navigate(`/product-variants/${category.slug}/edit/${id}`)}/>
             </div>
             <div>
                 <AlertDialog>

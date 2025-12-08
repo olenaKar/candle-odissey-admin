@@ -8,21 +8,16 @@ const ACCEPTED_MEDIA_TYPES = [
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 
-export const baseCandleFormSchema = z.object({
-    content: z.object({
-        en: z.object({ name: z.string(), description: z.string() }),
-        ru: z.object({ name: z.string(), description: z.string() }),
-        ua: z.object({ name: z.string(), description: z.string() }),
-    }),
+export const baseProductVariantFormSchema = z.object({
+    product: z.number(),
     quantity: z.number(),
     price: z.number(),
-    aroma: z.string(),
-    attributes: z.record(z.string(), z.array(z.string())),
+    attributes: z.record(z.string(), z.number()),
     images: z.array(z.instanceof(File)),
 });
 
 export const getCandleFormSchema = (isEdit: boolean) =>
-    baseCandleFormSchema.superRefine((data, ctx) => {
+    baseProductVariantFormSchema.superRefine((data, ctx) => {
         if (!isEdit && data.images.length === 0) {
             ctx.addIssue({ code: "custom", message: "At least one file is required." });
         }
@@ -44,4 +39,4 @@ export const getCandleFormSchema = (isEdit: boolean) =>
     });
 
 
-export type CandleFormValues = z.infer<typeof baseCandleFormSchema>;
+export type ProductVariantFormValues = z.infer<typeof baseProductVariantFormSchema>;

@@ -1,6 +1,6 @@
 import type {ColumnDef} from "@tanstack/react-table";
 import type {ProductsResponseItem} from "@/types/candle.ts";
-import {ActionsCells} from "@/components/candles-table-columns.tsx";
+// import {ProductActionsCells} from "@/components/product-action-cells.tsx";
 
 export const columnsProducts: ColumnDef<ProductsResponseItem>[] = [
     {
@@ -17,8 +17,8 @@ export const columnsProducts: ColumnDef<ProductsResponseItem>[] = [
         accessorKey: "createdAt",
         header: "CreatedAt",
     },
-    {
-        header: "Actions",
-        cell: ({ row }) => <ActionsCells row={row}/>,
-    },
+    // {
+    //     header: "Actions",
+    //     cell: ({ row }) => <ProductActionsCells row={row}/>,
+    // },
 ]

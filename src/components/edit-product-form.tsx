@@ -1,4 +1,4 @@
-// import {CandleForm} from "@/components/candle-form.tsx";
+// import {ProductVariantForm} from "@/components/product-variant-form.tsx";
 import {useParams} from "react-router";
 import {useEffect, useState} from "react";
 import {fetchCandleById} from "@/lib/axios.ts";
@@ -66,7 +66,7 @@ const CandleEditPage = () => {
     return (
         <div>
             <h1 className='font-medium text-xl pb-8'>Edit candle</h1>
-            {/*<CandleForm defaultValues={candleToFormValues}/>*/}
+            {/*<ProductVariantForm defaultValues={candleToFormValues}/>*/}
         </div>
     )
 }

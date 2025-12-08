@@ -1,6 +1,6 @@
 import axios from 'axios'
 import type {
-    CandlePayload, CategoriesResponse,
+    ProductVariantPayload, CategoriesResponse,
     CategoryAttributesResponse, ProductPayload, ProductsResponseItem,
     ProductVariant,
     ProductVariantsResponse
@@ -26,6 +26,25 @@ export async function fetchProductVariants({page, pageSize, query, category}: { 
     }
 }
 
+export async function fetchProductsByCategory(categoryId: number) {
+    try {
+        const response = await axios.get(`${BASE_URL}/products/category/${categoryId}`)
+        return response.data
+    } catch (error) {
+        console.error("Failed to fetch products by category", error)
+        throw error
+    }
+}
+
+export async function fetchProductVariantById(id: number) {
+    try {
+        const response = await axios.get(`${BASE_URL}/variants/${id}`)
+        return response.data
+    } catch (error) {
+        console.error("Failed to fetch product by id", error)
+    }
+}
+
 export async function fetchProducts({page, pageSize, query, category}: { page: number, pageSize: number, query?: string, category?: string}) {
     try {
         const params = new URLSearchParams({
@@ -46,22 +65,25 @@ export async function fetchProducts({page, pageSize, query, category}: { page: n
 
 export async function fetchCategoryAttributes({slug}: {slug: string}): Promise<CategoryAttributesResponse> {
     const {data} = await axios.get(`${BASE_URL}/categories/${slug}/attributes`)
+
+    console.log('data ', data)
     return data
 }
 export async function fetchCategoryVariants(): Promise<CategoriesResponse> {
     const {data} = await axios.get(`${BASE_URL}/categories`)
     return data
 }
-export const createCandle = async (data: CandlePayload) => {
-    return await axios.post(`${BASE_URL}/candles`, data)
+
+export const createProductVariant = async (data: ProductVariantPayload) => {
+    return await axios.post(`${BASE_URL}/variants`, data)
 }
 
-export const updateCandle = async (id: number, data: CandlePayload) => {
-    return await axios.put(`${BASE_URL}/candles/${id}`, data)
+export const updateCandle = async (id: number, data: ProductVariantPayload) => {
+    return await axios.put(`${BASE_URL}/variants/${id}`, data)
 }
 
 export const changeCandleStatus = async (id: number, status: string) => {
-    return await axios.patch(`${BASE_URL}/candles/${id}/change-status`, {status})
+    return await axios.patch(`${BASE_URL}/variants/${id}/change-status`, {status})
 }
 
 export const fetchCandleById = async (id: number | string) => {
@@ -69,7 +91,7 @@ export const fetchCandleById = async (id: number | string) => {
         const response = await axios.get<ProductVariant>(`${BASE_URL}/candles/${id}`)
         return response.data
     } catch (err) {
-        console.error('Failed to fetch candle', err)
+        console.error('Failed to fetch product variant', err)
         throw err
     }
 }

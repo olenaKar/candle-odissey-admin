@@ -26,15 +26,15 @@ const data = {
   navMain: [
     {
       title: "Candles Panel",
-      url: `/products/${categorySlugs.candles}`,
+      url: `/product-variants/${categorySlugs.candles}`,
       items: [
         {
           title: "Add new candle",
-          url: `/products/${categorySlugs.candles}/new`,
+          url: `/product-variants/${categorySlugs.candles}/new`,
         },
         {
-          title: "All candles",
-          url: `/products/${categorySlugs.candles}`,
+          title: "All product-variants",
+          url: `/product-variants/${categorySlugs.candles}`,
         },
       ],
     },

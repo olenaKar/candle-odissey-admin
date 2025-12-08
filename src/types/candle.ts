@@ -2,6 +2,7 @@
 type Locale = 'en' | 'ru' | 'ua';
 
 export interface AttributeValue {
+    id: number;
     value: string;
 }
 
@@ -23,23 +24,17 @@ export interface ProductContent {
 
 export type CategoriesResponse = Category[]
 
-export type CandlePayload = {
-    content: {
-        en: { name: string; description: string };
-        ru: { name: string; description: string };
-        ua: { name: string; description: string };
-    };
+export type ProductVariantPayload = {
     quantity: number;
     price: number;
+    productId: number;
     media: {
         url: string;
         sortOrder: number;
         altText?: string;
         meta?: string;
     }[];
-    aroma: string;
-    attributes: Record<string, string[]>;
-    categorySlug: string;
+    attributes: number[];
 };
 
 export type ProductPayload = {
@@ -82,6 +77,7 @@ export interface Category {
     createdAt: string;
     updatedAt: string;
     name: string;
+    slug: string;
 }
 
 export type ProductVariantsResponse = ProductVariant & {
@@ -91,12 +87,14 @@ export type ProductVariantsResponse = ProductVariant & {
     }
     media: Media[];
     variantAttributeValues: {
+        productVariantId: number
+        attributeValueId: number
          attributeValue: {
+             id: number
              value: string;
              attribute: Attribute
          };
-    }
-
+    }[]
 }
 
 export type ProductsResponseItem =

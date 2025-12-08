@@ -12,8 +12,8 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 // import {useState} from "react";
 // import {fetchCandleById} from "@/lib/axios.ts";
-// import {columns} from "@/components/candle-table-columns-data.tsx";
-// import {DataTable} from "@/components/candles-table.tsx";
+// import {columns} from "@/components/product-variants-table-columns-data.tsx";
+// import {DataTable} from "@/components/product-variants-table.tsx";
 
 const searchSchema = z.object({
     query: z.string().optional().transform(val => val?.trim() || undefined),

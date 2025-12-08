@@ -8,12 +8,17 @@ import {Button} from "@/components/ui/button.tsx";
 
 type AttributeSelectProps = {
     name: string;
-    options: string[];
+    options: Array<{
+        value: string;
+        label: string;
+    }>;
     field: ControllerRenderProps<any, string>;
 }
 
+
 export const AttributeSelect = ({ name, options, field } : AttributeSelectProps) => {
     const [open, setOpen] = useState(false);
+
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger className="mb-4" asChild>
@@ -27,7 +32,7 @@ export const AttributeSelect = ({ name, options, field } : AttributeSelectProps)
                     )}
                 >
                     {field.value
-                        ? options.find((option) => option === field.value)
+                        ? options.find((option) => option.value === field.value)?.label
                         : `Select ${name}`}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -39,10 +44,10 @@ export const AttributeSelect = ({ name, options, field } : AttributeSelectProps)
                     <CommandGroup className="max-h-60 overflow-y-auto">
                         {options.map((option) => (
                             <CommandItem
-                                value={option}
-                                key={option}
+                                value={option.value}
+                                key={option.value}
                                 onSelect={() => {
-                                    field.onChange(option)
+                                    field.onChange(option.value)
                                     setOpen(false)
                                 }}
                             >
@@ -52,7 +57,7 @@ export const AttributeSelect = ({ name, options, field } : AttributeSelectProps)
                                         options === field.value ? "opacity-100" : "opacity-0"
                                     )}
                                 />
-                                {option}
+                                {option.label}
                             </CommandItem>
                         ))}
                     </CommandGroup>
