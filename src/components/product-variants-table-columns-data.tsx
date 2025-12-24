@@ -2,20 +2,7 @@ import type {ColumnDef} from "@tanstack/react-table";
 import type {ProductVariantsResponse} from "@/types/candle.ts";
 import {ActionsCells} from "@/components/product-variant-action-cells.tsx";
 
-const attributesColumns = (attrs: any) => {
-    const res = attrs.map(item => {
-        console.log('item ', item)
-
-        return item
-    })
-
-    return res
-}
-
-export const getProductVariantsColumns = (data: ProductVariantsResponse[]): ColumnDef<ProductVariantsResponse>[] => {
-    const firstItem = data[0]
-    attributesColumns(firstItem.variantAttributeValues)
-
+export const getProductVariantsColumns = (): ColumnDef<ProductVariantsResponse>[] => {
     return [
         {
             accessorKey: "id",

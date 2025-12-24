@@ -51,7 +51,7 @@ const ProductVariants = () => {
         <div className="container mx-auto py-10">
             <SearchForm onSearch={handleSearch} loading={loading} value={searchQuery}/>
             <div className="pb-6">
-                <DataTable columns={getProductVariantsColumns(productVariants)} data={productVariants}/>
+                <DataTable columns={getProductVariantsColumns()} data={productVariants}/>
             </div>
 
             <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage}/>
