@@ -32,7 +32,6 @@ const Products = () => {
                 query,
             })
 
-            console.log(res.data, "data")
             setProducts(res.data)
             setTotalPages(Math.ceil(res.count / DEFAULT_PAGE_SIZE))
         } catch (err) {
@@ -50,7 +49,7 @@ const Products = () => {
     if (loading) return <Spinner />
     return (
         <div className="container mx-auto py-10">
-            <SearchForm onSearch={handleSearch} loading={loading} />
+            <SearchForm onSearch={handleSearch} loading={loading} value={searchQuery} />
             <div className="pb-6">
                 <DataTable columns={columnsProducts} data={products}/>
             </div>
