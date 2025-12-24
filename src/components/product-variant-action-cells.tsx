@@ -1,19 +1,21 @@
 "use client"
 
 import type {Row} from "@tanstack/react-table";
-import type {ProductVariantsResponse} from "@/types/candle.ts";
+import {type ProductVariantsResponse, Status} from "@/types/candle.ts";
 import {Archive, PencilIcon} from "lucide-react";
 import {useNavigate} from "react-router";
 import {
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
-    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog.tsx";
-import {changeCandleStatus} from "@/lib/axios.ts";
+import {changeProductVariantStatus} from "@/lib/axios.ts";
 import {toast} from "sonner";
 
 export const ActionsCells = ({ row }: {row: Row<ProductVariantsResponse>}) => {
@@ -22,8 +24,9 @@ export const ActionsCells = ({ row }: {row: Row<ProductVariantsResponse>}) => {
     const {category} = row.original.product
 
     const handleArchive = async () => {
+        console.log("Archive candle", id)
         await toast.promise(
-            changeCandleStatus(id, 'ARCHIVED'),
+            changeProductVariantStatus(id, Status.ARCHIVED),
             {
                 loading: "Loading...",
                 success: "Candle has been archived",

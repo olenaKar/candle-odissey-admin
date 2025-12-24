@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/form.tsx";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
+import {useEffect} from "react";
 // import {useState} from "react";
 // import {fetchCandleById} from "@/lib/axios.ts";
 // import {columns} from "@/components/product-variants-table-columns-data.tsx";
@@ -23,15 +24,20 @@ const searchSchema = z.object({
 interface SearchFormProps {
     onSearch: (query: string) => void
     loading?: boolean
+    value: string
 }
 
 type SearchFormValues = z.infer<typeof searchSchema>
 
-export const SearchForm= ({ onSearch, loading }: SearchFormProps)=> {
+export const SearchForm= ({ onSearch, loading, value }: SearchFormProps)=> {
     const searchForm = useForm({
         resolver: zodResolver(searchSchema),
-        defaultValues: { query: "" },
+        defaultValues: { query: value },
     })
+
+    useEffect(() => {
+        searchForm.setValue("query", value)
+    }, [value, searchForm])
 
     const onSubmit = (values: SearchFormValues) => {
         console.log("Search query:", values.query)
@@ -59,8 +65,19 @@ export const SearchForm= ({ onSearch, loading }: SearchFormProps)=> {
                           )}
                       />
                   </div>
-                  <Button type="submit" disabled={loading} className="cursor-pointer">
+                  <Button type="submit" disabled={loading} className="cursor-pointer mr-2">
                       {loading ? "Searching..." : "Search"}
+                  </Button>
+                  <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                          searchForm.reset({ query: "" })
+                          onSearch("")
+                      }}
+                      disabled={loading}
+                  >
+                      Clear
                   </Button>
               </form>
           </Form>

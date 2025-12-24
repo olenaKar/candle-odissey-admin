@@ -26,7 +26,7 @@ const ProductVariantEditPage = () => {
             images: [],
             product: +p.product.id,
             quantity: p.quantity,
-            price: p.price,
+            prices: p.prices,
             attributes
         }
     }

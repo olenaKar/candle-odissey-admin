@@ -42,16 +42,14 @@ const ProductVariants = () => {
     }
 
     const handleSearch = async (query: string) => {
-        // setSearching(true)
         setSearchQuery(query)
         setCurrentPage(1)
-        // setSearching(false)
     }
 
     if (loading) return <Spinner />
     return (
         <div className="container mx-auto py-10">
-            <SearchForm onSearch={handleSearch} loading={loading} />
+            <SearchForm onSearch={handleSearch} loading={loading} value={searchQuery}/>
             <div className="pb-6">
                 <DataTable columns={getProductVariantsColumns(productVariants)} data={productVariants}/>
             </div>

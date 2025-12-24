@@ -1,9 +1,9 @@
 import axios from 'axios'
-import type {
-    ProductVariantPayload, CategoriesResponse,
-    CategoryAttributesResponse, ProductPayload, ProductsResponseItem,
-    ProductVariant,
-    ProductVariantsResponse
+import {
+    type ProductVariantPayload, type CategoriesResponse,
+    type CategoryAttributesResponse, type ProductPayload, type ProductsResponseItem,
+    type ProductVariant,
+    type ProductVariantsResponse, Status
 } from "@/types/candle.ts";
 
 const BASE_URL = import.meta.env.VITE_API_URL
@@ -39,6 +39,7 @@ export async function fetchProductsByCategory(categoryId: number) {
 export async function fetchProductVariantById(id: number) {
     try {
         const response = await axios.get(`${BASE_URL}/variants/${id}`)
+        console.log(response.data)
         return response.data
     } catch (error) {
         console.error("Failed to fetch product by id", error)
@@ -82,7 +83,7 @@ export const updateCandle = async (id: number, data: ProductVariantPayload) => {
     return await axios.put(`${BASE_URL}/variants/${id}`, data)
 }
 
-export const changeCandleStatus = async (id: number, status: string) => {
+export const changeProductVariantStatus = async (id: number, status: Status) => {
     return await axios.patch(`${BASE_URL}/variants/${id}/change-status`, {status})
 }
 

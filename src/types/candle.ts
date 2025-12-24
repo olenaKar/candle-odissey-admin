@@ -12,6 +12,17 @@ export interface Attribute {
     attributeValues: AttributeValue[];
 }
 
+export interface Price {
+    currency: Currencies;
+    amount: number;
+}
+
+export enum Currencies {
+    UAH = 'UAH',
+    USD = 'USD',
+    EUR = 'EUR'
+}
+
 export type CategoryAttributesResponse =  Attribute[]
 
 export interface ProductContent {
@@ -26,7 +37,7 @@ export type CategoriesResponse = Category[]
 
 export type ProductVariantPayload = {
     quantity: number;
-    price: number;
+    prices: Price[];
     productId: number;
     media: {
         url: string;
@@ -58,8 +69,13 @@ export interface Product {
     id: number;
     createdAt: string;
     productContent: ProductContent[];
-    status: 'ACTIVE' | 'INACTIVE';
+    status: Status;
     updatedAt: string;
+}
+
+export enum Status {
+    ACTIVE = 'ACTIVE',
+    ARCHIVED = 'ARCHIVED'
 }
 
 export interface ProductVariant {
@@ -68,7 +84,8 @@ export interface ProductVariant {
     updatedAt: string;
     sku: string
     quantity: number;
-    price: number;
+    prices: Price[];
+    status: Status;
     productId: number;
 }
 

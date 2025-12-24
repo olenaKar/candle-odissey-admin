@@ -33,7 +33,7 @@ const data = {
           url: `/product-variants/${categorySlugs.candles}/new`,
         },
         {
-          title: "All product-variants",
+          title: "All candles",
           url: `/product-variants/${categorySlugs.candles}`,
         },
       ],
@@ -47,7 +47,7 @@ const data = {
               url: "/products/new",
             },
               {
-                  title: "All Product",
+                  title: "All Products",
                   url: "/products",
               },
           ],

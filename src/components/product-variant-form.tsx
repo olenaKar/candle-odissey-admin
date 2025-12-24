@@ -17,9 +17,7 @@ import {
 } from "@/components/ui/popover"
 import {
     Command,
-    // CommandEmpty,
     CommandGroup,
-    // CommandInput,
     CommandItem,
 } from "@/components/ui/command"
 
@@ -32,8 +30,11 @@ import { useRef } from 'react';
 import 'ckeditor5/ckeditor5.css';
 import SortableImages, {type ImageItem} from "@/components/sort-images.tsx";
 import {cn} from "@/lib/utils.ts";
-import {type ProductVariantFormValues, getCandleFormSchema} from "@/lib/schemas/candles.ts";
-import type {Attribute, Media, Product} from "@/types/candle.ts";
+import {
+    type ProductVariantFormValues,
+    getCandleFormSchema,
+} from "@/lib/schemas/candles.ts";
+import {type Attribute, Currencies, type Media, type Product} from "@/types/candle.ts";
 import {toast} from "sonner";
 import {
     createProductVariant,
@@ -93,14 +94,6 @@ export function ProductVariantForm({ defaultValues }: ProductVariantFormProps) {
         }
     }
 
-    // attributesDefaults должны иметь такую форму:
-    //{
-    //     "wick": 1,
-    //     "size": 4
-    // }
-    // нам нужна эта переменная 1 раз - чтобы засунуть её в defaultValues для attributes. и нужно
-    // засунуть ее в правильном формате ^
-
     const attributesDefaults: Record<string, number> = {};
     attributes?.forEach(attr => {
         const attrName = attr.name;
@@ -115,25 +108,25 @@ export function ProductVariantForm({ defaultValues }: ProductVariantFormProps) {
         setImages(images.map(image => ({path: image.src, id: image.id})))
     }
 
+    const DEFAULT_PRICES: ProductVariantFormValues["prices"] = [
+        { currency: Currencies.UAH, amount: 0 },
+        { currency: Currencies.USD, amount: 0 },
+        { currency: Currencies.EUR, amount: 0 },
+    ]
+
+
     const form = useForm<ProductVariantFormValues>({
         resolver: zodResolver(formSchema),
         mode: "onBlur",
         defaultValues: {
             product: products[0]?.id,
             quantity: 1,
-            price: 0,
+            prices: DEFAULT_PRICES,
             images: [],
-            // attributes изначально должны иметь правильную форму, а именно - объект такого типа:
-            // {
-            //     "wick": 2,
-            //     "size": 4
-            // }
-            attributes: attributesDefaults, //@TODO: поставить attributesDefaults сюда вместо объекта
+            attributes: attributesDefaults,
             ...defaultValues
         }
     })
-    console.log('attributes ', form.watch('attributes'))
-    //     Object.values(form.watch('attributes')))
 
     const { reset } = form
 
@@ -155,20 +148,16 @@ export function ProductVariantForm({ defaultValues }: ProductVariantFormProps) {
             meta: image.meta ?? '',
         }));
 
-        // values.attributes = {
-        //     "wick": 1,
-        //     "size": 4
-        // }
-
         const payload = {
             quantity: values.quantity,
-            price: values.price,
+            prices: values.prices,
             productId: values.product,
             media: imagesData,
-            attributes: Object.values(values.attributes) //@TODO: поменять на реальные
+            attributes: Object.values(values.attributes)
         }
 
         try {
+            console.log(payload, 'payload')
             await toast.promise(
                 Promise.resolve(
                     defaultValues
@@ -288,7 +277,7 @@ export function ProductVariantForm({ defaultValues }: ProductVariantFormProps) {
                     {/*        )*/}
                     {/*    )*/}
                     {/*}*/}
-                <div className='flex'>
+                <div>
                     <FormField
                         control={form.control}
                         name='quantity'
@@ -311,28 +300,37 @@ export function ProductVariantForm({ defaultValues }: ProductVariantFormProps) {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name='price'
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Price ($)</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type='number'
-                                        placeholder="Price"
-                                        className="w-20 mr-5"
-                                        {...field}
-                                        onChange={(e) => {
-                                            const value = e.target.value
-                                            field.onChange(value === '' ? undefined : Number(value))
-                                        }}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    <div className='flex'>
+                        {form.watch('prices').map((price, index) => {
+                            const currency = price.currency
+
+                            return (
+                                <FormField
+                                    key={currency}
+                                    control={form.control}
+                                    name={`prices.${index}.amount`}
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{`Price ${currency}`}</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="number"
+                                                    className="w-20 mr-5"
+                                                    value={field.value ?? ''}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value
+                                                        field.onChange(value === '' ? undefined : Number(value))
+                                                    }}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            )
+                        })}
+                    </div>
+
                 </div>
                 <div className="flex">
                     {attributes && attributes.map(attr => {
@@ -356,62 +354,6 @@ export function ProductVariantForm({ defaultValues }: ProductVariantFormProps) {
                         )
                     })}
                 </div>
-                {/*<FormField*/}
-                {/*    control={form.control}*/}
-                {/*    name='aroma'*/}
-                {/*    render={({ field }) => (*/}
-                {/*        <FormItem className="w-80">*/}
-                {/*            <FormLabel>Aroma</FormLabel>*/}
-                {/*            <FormControl>*/}
-                {/*                <Popover open={openAroma} onOpenChange={setOpenAroma}>*/}
-                {/*                    <PopoverTrigger asChild>*/}
-                {/*                        <Button*/}
-                {/*                            variant="outline"*/}
-                {/*                            role="combobox"*/}
-                {/*                            aria-expanded={openAroma}*/}
-                {/*                            className={cn(*/}
-                {/*                                "w-full justify-between",*/}
-                {/*                                !field.value && "text-muted-foreground"*/}
-                {/*                            )}*/}
-                {/*                        >*/}
-                {/*                            {field.value*/}
-                {/*                                ? getFrameworks(AromaLabels).find((aroma: Option) => aroma.value === field.value)?.label*/}
-                {/*                                : "Select aroma"}*/}
-                {/*                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />*/}
-                {/*                        </Button>*/}
-                {/*                    </PopoverTrigger>*/}
-                {/*                    <PopoverContent className="w-full p-0" side="bottom" align="start">*/}
-                {/*                        <Command>*/}
-                {/*                            <CommandInput placeholder="Search aroma..." />*/}
-                {/*                            <CommandEmpty>No aroma found.</CommandEmpty>*/}
-                {/*                            <CommandGroup className="max-h-60 overflow-y-auto">*/}
-                {/*                                {getFrameworks(AromaLabels).map((aroma) => (*/}
-                {/*                                    <CommandItem*/}
-                {/*                                        value={aroma.label}*/}
-                {/*                                        key={aroma.value}*/}
-                {/*                                        onSelect={() => {*/}
-                {/*                                            form.setValue("aroma", aroma.value)*/}
-                {/*                                            setOpenAroma(false)*/}
-                {/*                                        }}*/}
-                {/*                                    >*/}
-                {/*                                        <Check*/}
-                {/*                                            className={cn(*/}
-                {/*                                                "mr-2 h-4 w-4",*/}
-                {/*                                                aroma.value === field.value ? "opacity-100" : "opacity-0"*/}
-                {/*                                            )}*/}
-                {/*                                        />*/}
-                {/*                                        {aroma.label}*/}
-                {/*                                    </CommandItem>*/}
-                {/*                                ))}*/}
-                {/*                            </CommandGroup>*/}
-                {/*                        </Command>*/}
-                {/*                    </PopoverContent>*/}
-                {/*                </Popover>*/}
-                {/*            </FormControl>*/}
-                {/*            <FormMessage />*/}
-                {/*        </FormItem>*/}
-                {/*    )}*/}
-                {/*/>*/}
                 <FormField
                     control={form.control}
                     name='images'

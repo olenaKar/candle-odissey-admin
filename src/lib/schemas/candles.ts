@@ -1,4 +1,5 @@
 import { z } from "zod"
+import {Currencies} from "@/types/candle.ts";
 
 const ACCEPTED_MEDIA_TYPES = [
     "image/jpeg",
@@ -11,7 +12,12 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024
 export const baseProductVariantFormSchema = z.object({
     product: z.number(),
     quantity: z.number(),
-    price: z.number(),
+    prices: z.array(
+        z.object({
+            currency: z.enum(Currencies),
+            amount: z.number().int().nonnegative(),
+        })
+    ),
     attributes: z.record(z.string(), z.number()),
     images: z.array(z.instanceof(File)),
 });

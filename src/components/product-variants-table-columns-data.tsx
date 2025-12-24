@@ -14,7 +14,6 @@ const attributesColumns = (attrs: any) => {
 
 export const getProductVariantsColumns = (data: ProductVariantsResponse[]): ColumnDef<ProductVariantsResponse>[] => {
     const firstItem = data[0]
-    // console.log(firstItem)
     attributesColumns(firstItem.variantAttributeValues)
 
     return [
@@ -35,14 +34,22 @@ export const getProductVariantsColumns = (data: ProductVariantsResponse[]): Colu
             header: "Name",
         },
         {
-            accessorKey: "createdAt",
-            header: "CreatedAt",
+            accessorFn: (row) =>
+                row.variantAttributeValues.map((attr) => attr.attributeValue.value).join(', '),
+            header: "Attributes",
         },
         {
             accessorKey: "quantity",
             header: "Quantity",
         },
-        // ...attributesColumns(firstItem.variantAttributeValues),
+        {
+            accessorKey: "createdAt",
+            header: "CreatedAt",
+            cell: ({ getValue }) => {
+                const date = new Date(getValue() as string);
+                return date.toLocaleDateString("ru-RU");
+            },
+        },
         {
             header: "Actions",
             cell: ({ row }) => <ActionsCells row={row}/>,
